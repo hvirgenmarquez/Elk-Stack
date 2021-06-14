@@ -1,0 +1,40 @@
+
+---
+- name: installing and launching filebeat
+  hosts: webservers
+  become: yes
+  tasks:
+
+  - name: download filebeat deb
+    command: curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.1-amd64.deb
+
+  - name: install filebeat deb
+    command: sudo dpkg -i filebeat-7.6.1-amd64.deb
+
+  - name: drop in filebeat.yml
+    copy:
+      src: /etc/ansible/filebeat-config.yml
+      dest: /etc/filebeat/
+
+  - name: enable and configure system module
+    command: sudo filebeat modules enable system
+
+  - name: setup filebeat
+    command: sudo filebeat setup
+
+  - name: start filebeat service
+    command: sudo service filebeat setup
+
+  - name: enable service filebeat on boot
+    systemd:
+      name: enable http
+      enabled: yes
+
+  - name: Increase virtual memory
+    command: sysctl -w vm.max_map_count=262144
+
+  - name: Increase virtual memory on restart
+    shell: echo "vm.max_map_count=262144" >> etc/sysctl.conf
+
+
+
