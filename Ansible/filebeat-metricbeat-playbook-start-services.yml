@@ -1,0 +1,19 @@
+
+---
+- name: Launch FIlebeat and Metric Beat and increase memory
+  hosts: webservers
+  become: yes
+  tasks:
+
+  - name: start filebeat service
+    command: sudo service filebeat start
+
+  - name: Increase virtual memory
+    command: sysctl -w vm.max_map_count=262144
+
+  - name: start metricbeat service
+    command: sudo service metricbeat start
+
+  - name: Increase virtual memory
+    command: sysctl -w vm.max_map_count=262144
+
