@@ -91,7 +91,7 @@ Below is a detailed table visualizing the Virtual Machines used in this project:
 As mentioned above, there are two seperate Virtual Networks, each with their own respective Network Security Groups. 
 
 #### Red-Team Virtual Network:
-- This VN contains the following virtual machines: 
+This VN contains the following virtual machines: 
 | Name                | IP Address | OS    |
 |---------------------|------------|-------|
 | Jumpbox Provisioner | 10.0.0.4   | Linux |
@@ -106,7 +106,7 @@ These 3 virtual machines have whitelist security policies to create specific acc
 Putting forward these security policies ensures that are no additional access for these machines. 
 
 #### ELK Virtual Network:
-- This VN contains the following virtual machines:
+This VN contains the following virtual machines:
 | Name  | IP Address | OS    |
 |-------|------------|-------|
 | Web-3 | 10.1.0.4   | Linux |
@@ -119,7 +119,6 @@ The purpose of creating a seperate virtual network for Web-3 is to allow the ELK
 Creating a seperate virtual network allows for a more smooth connection to Kibana.
 
 A summary of the access policies in place can be found in the table below.
-
 | Name     | Publicly Accessible | Allowed IP Addresses |
 |----------|---------------------|----------------------|
 | Jump Box | Yes/No              | 10.0.0.1 10.0.0.2    |
