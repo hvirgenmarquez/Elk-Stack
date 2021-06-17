@@ -128,13 +128,25 @@ A summary of the access policies in place can be found in the table below.
 
 ### Elk Stack Setup and Configuration
 
-Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
-- _TODO: What is the main advantage of automating configuration with Ansible?_
+In order to allow for a steamless instalation of the ELK Stack Setup, I created a vareity of playbooks formating to be run through Ansible.
+- Running playbooks through Ansible gives the advantage of automation, while ensuring in the event of multiple instalations to multiple VMs, each VM will have the same configuration. 
 
 The playbook implements the following tasks:
-- _TODO: In 3-5 bullets, explain the steps of the ELK installation play. E.g., install Docker; download image; etc._
-- ...
-- ...
+1. Clarify What is being installed
+2. Get installation from website
+3. Install files downladed from Step 2
+4. Copy Configurations from Host VM to Webserver VMs
+5. Enable System Configuration Modules
+6. Setup Service
+7. Start Service
+
+For this project I utilized a total of 5 playbooks:
+- Playbook to Install [ELK Stack Container](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/elkplaybook.yml)
+- Playbook to Install [DVWA Container](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/web-3playbook.yml)
+- Playbook to Install [Filbeat](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/Filebeat-playbook.yml)
+- Playbook to Install [Metricbeat](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/metricbeat-playbook.yml)
+- Playbook to [Start Metricbeat and Filebeat](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/filebeat-metricbeat-playbook-start-services.yml)
+  - This playbook is to start up the services and increase max memory in case these settings were not saved.
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
