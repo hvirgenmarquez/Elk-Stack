@@ -119,11 +119,12 @@ The purpose of creating a seperate virtual network for Web-3 is to allow the ELK
 Creating a seperate virtual network allows for a more smooth connection to Kibana.
 
 A summary of the access policies in place can be found in the table below.
-| Name     | Publicly Accessible | Allowed IP Addresses |
-|----------|---------------------|----------------------|
-| Jump Box | Yes/No              | 10.0.0.1 10.0.0.2    |
-|          |                     |                      |
-|          |                     |                      |
+| Name                | Publicly Accessible | IP Address   |
+|---------------------|---------------------|--------------|
+| Jumpbox Provisioner | NO                  | 10.0.0.4     |   
+| Web-1               | NO                  | 10.0.0.5     |   
+| Web-2               | NO                  | 10.0.0.6     |   
+| Web-3               | NO                  | 10.1.0.4     |   
 
 ### Elk Stack Setup and Configuration
 
