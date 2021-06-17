@@ -65,14 +65,7 @@ The first layer of security in the Network Hiearchy starts with a Load Balancer 
   - Further, in order to add a 3rd layer of security, I used an ansible container. 
       - The Jumpbox Provisioner has 1 purpose: to connect to an ansible container, which is named "focused_poincare", to connect further down the Network Hiearchy. 
       - focused_poincare has a generated SSH-key that is programmed into the webservers and elk server, making it the only available method for access to the rest of the network setup. 
-
-Further down the Network Hiearchy you will find the webservers and the Elk server. The webservers are named Web-1 and Web-2 (and for the purpose of this project, I also added Web-3 for educational purposes), and the Elk Server is Web-3. 
-These servers are installed with the Filebeat and Metricbeat services to allow for monitoring using the Kibana interface:
--  Filebeat is a log-collection service, it collects detailed log data of activity detected within the hosts configured. 
-   - Filebeat is great to find information about what may be happening to your server, or if someone is trying to break into your server. 
-      - SSH login attempts are recorded using filebeat's log data service. This allows for a defensive supervision of the network activity in your Elk Stack setup. 
--  Metricbeat is another log-collection service, however unlike Filebeat, Metricbeat provides details on CPU activity, available memory, etc.,
-   - Metricbeat is useful to see if any particiular stress if affecting your servers. By monitoring the CPU, memory, network activity, and more, Metricbeat allows for a more   technical analysis of your server's activities. 
+- Further down the Network Hiearchy you will find the webservers and the Elk server. The webservers are named Web-1 and Web-2 (and for the purpose of this project, I also added Web-3 for educational purposes), and the Elk Server is Web-3. 
 
 Additonally, the network structure has a split between virtual networks. There are two different virtual networks (VN): Red-Team VN and ELK VN. 
 -  These two different Virtual Networks have their own Network Security Groups (NSG), each NSG allows for a different configuration to allow the ELK Stack Configuration to properly work (will explain further down). 
@@ -119,12 +112,12 @@ The purpose of creating a seperate virtual network for Web-3 is to allow the ELK
 Creating a seperate virtual network allows for a more smooth connection to Kibana.
 
 A summary of the access policies in place can be found in the table below.
-| Name                | Publicly Accessible | IP Address   |
-|---------------------|---------------------|--------------|
-| Jumpbox Provisioner | NO                  | 10.0.0.4     |   
-| Web-1               | NO                  | 10.0.0.5     |   
-| Web-2               | NO                  | 10.0.0.6     |   
-| Web-3               | NO                  | 10.1.0.4     |   
+| Name                | Publicly Accessible | Accessible by IP Address   |
+|---------------------|---------------------|----------------------------|
+| Jumpbox Provisioner | NO                  | Personal IP address        |   
+| Web-1               | NO                  | 10.0.0.4                   |   
+| Web-2               | NO                  | 10.0.0.4                   |   
+| Web-3               | NO                  | 10.0.0.4                   |   
 
 ### Elk Stack Setup and Configuration
 
@@ -148,31 +141,50 @@ For this project I utilized a total of 5 playbooks:
 - Playbook to [Start Metricbeat and Filebeat](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/filebeat-metricbeat-playbook-start-services.yml)
   - This playbook is to start up the services and increase max memory in case these settings were not saved.
 
-The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
+When the ELK Server Container is properly setup, you should be able to run _sudo docker container list -a_ and get a [response](https://github.com/hvirgenmarquez/HVirgen/blob/main/Diagrams/Screenshots/123123123.jpg) (<-click link).
 
-![TODO: Update the path with the name of your screenshot of docker ps output](Images/docker_ps_output.png)
 
 ### Services being utilized & Machines monitored
-This ELK server is configured to monitor the following machines:
-- _TODO: List the IP addresses of the machines you are monitoring_
+For further reiteration: there are 4 total VMs and 2 containers being utilized in this project. 
+- The 4 VMs are: Web-1, Web-2, Web-3 (ELK), and Jumpbox Provisioner.
+- The 2 Containers are: Focused_poincare, sebp:elk/726.
 
-We have installed the following Beats on these machines:
-- _TODO: Specify which Beats you successfully installed_
+In order for the ELK stack to work properly, the container Focused_poincare was used as the host machine for this project. As the host machine, Focused_poincare was given configurations for the /Ansible/Hosts file, and given directions to place Web-1, Web-2, and Web-3 in [Webservers] Group, and Web-3 in [ELK] Group.
+- [Webservers]: This group is used to as the host for the playbooks. As the host, the playbooks will push forward the installations on to all three VMs, allowing for automated installation of Filebeat and Metricbeat.
+- [ELK]: This group is to specify which server will be running the ELK Container. Since Web-3 is the only one in this group, in order to access Kibana, the external IP address of Web-3 is used to access the Kibana interface, while the internal IP is used to configure filebeat and metricbeat. 
+  - Placing only 1 VM in the ELK group allows for seemless connection from an outside source (like my personal computer) to the kibana interface. 
 
-These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs, which we use to track user logon events, etc._
+Metricbeat and FIlebeat installations:
+- [Filebeat] and [Metricbeat] As shown in the playbook, the installation of Filebeat has been completely automized thanks to the Ansible command. 
+  - To make sure Filebeat is properly configured, I created a Filebeat-Configuration.yml file that specifies:
+    - The setup.kibana IP and port, in this case: "10.1.0.4:5601"
+    - The output.elasticsearch IP and port, in this case: ["10.1.0.4:9200"]
+  - Using these ports gives specifications for the Filebeat and Metricbeat services, by instructing them to gather data and output them to this data.
+  - For example:
+    - The 5601 port is the port required to connect to the Kibana interface.
+    - The 9200 port is the port required to output elasticsearch log data and metric data to Kibana.
+  - Both Ports need to be specified in order for the Kibana interface to properly receive data.
+  - The IP address of 10.1.0.4 is Web-3's IP, where the ELK Container is installed. Sending all data to this IP address ensures that there is 1 VM gathering all data so that Kibana can properly display the data. 
+
+Metricbeat and FIlebeat usage:
+-  [Filebeat] is a log-collection service, it collects detailed log data of activity detected within the hosts configured. 
+   - Filebeat is great to find information about what may be happening to your server, or if someone is trying to break into your server. 
+      - SSH login attempts are recorded using filebeat's log data service. This allows for a defensive supervision of the network activity in your Elk Stack setup. 
+-  [Metricbeat] is another log-collection service, however unlike Filebeat, Metricbeat provides details on CPU activity, available memory, etc.,
+   - Metricbeat is useful to see if any particiular stress if affecting your servers. By monitoring the CPU, memory, network activity, and more, Metricbeat allows for a more   technical analysis of your server's activities. 
 
 ### Using the Playbook
-In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
+In order to properly use the playbook, there are a few steps you need to take.
+1. SSH to the server where you will be pushing these installations out, we will call this the control node server. In my case, I used the container "Focused_poincare" as my control node server.
+  - The Focused_Poincare container is located in the Jumpbox Virtual Machine: 10.0.0.4. 
+2. From the control node server you should have Ansible installed. If Ansible is installed, use the command: _Anisble-PLaybook_ _<Playbook here>. So if I wanted to install Filebeat, I would use the following command: _Ansible-Playbook Filebeat-Playbook.yml_
+3. Once you enter this command, assume all syntax is correct in your playbook (use _Ansible-Playbook <Playbook here> --syntax-check_ to check ssyntax), the installation will begin.
+4. During installation you will see all the tasks being completed one-by-one. It is crucial to line-up your tasks in a logical chronological order. So if you are installing Filebeat, make sure the Download is the first step, followed by installation, followed by setup, etc., (refer to my playbook for an example).
+5. Assuming all works, the installtion will give you a result line with either: #=Succeeded, #=Changed, #=Failed.
+   - #=Succeeded is self-explanatory. Your playbook worked!
+   - #=Changed implies that data was overwritten, this is OK! Your playbook worked!
+   - #=Fialed implies that there was an error during the installation. Typically you will get an error message as well as a explanation of the error. Fix up your syntax, or torubleshoot the issue, and try the Ansible-Playbook command again.
 
-SSH into the control node and follow the steps below:
-- Copy the _____ file to _____.
-- Update the _____ file to include...
-- Run the playbook, and navigate to ____ to check that the installation worked as expected.
-
-_TODO: Answer the following questions to fill in the blanks:_
-- _Which file is the playbook? Where do you copy it?_
-- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_
-- _Which URL do you navigate to in order to check that the ELK server is running?
-
-_As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
+This brings me to the end of my project report. Creating the ELK Stack Server was definitely an experience that I appreciate. Even though at first, I decided to manually install Filebeat and Metricbeat, which led to a myriad of issues with Kibana not receiving logs, getting 5601:connection refused errors, and more. I quickly learned that there is a reason the playbook is the most eficient method to install these files, not just because it's automated, but because it will ensure everything is properly configured accross the board. 
+ 
+I definitely feel ready to create a network like this should the opportunity present itself in my professional career. If anyone is reading this and has never setup an ELk Stack Server, I definitely recommend you give it a shot! There are plenty of resources online to help you along the journey. 
