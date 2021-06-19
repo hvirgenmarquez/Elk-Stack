@@ -185,6 +185,7 @@ In order to properly use the playbook, there are a few steps you need to take.
    - #=Changed implies that data was overwritten, this is OK! Your playbook worked!
    - #=Fialed implies that there was an error during the installation. Typically you will get an error message as well as a explanation of the error. Fix up your syntax, or torubleshoot the issue, and try the Ansible-Playbook command again.
 
+ ## Final Thoughts 
 This brings me to the end of my project report. Creating the ELK Stack Server was definitely an experience that I appreciate. Even though at first, I decided to manually install Filebeat and Metricbeat, which led to a myriad of issues with Kibana not receiving logs, getting 5601:connection refused errors, and more. I quickly learned that there is a reason the playbook is the most eficient method to install these files, not just because it's automated, but because it will ensure everything is properly configured accross the board. 
  
 I definitely feel ready to create a network like this should the opportunity present itself in my professional career. If anyone is reading this and has never setup an ELk Stack Server, I definitely recommend you give it a shot! There are plenty of resources online to help you along the journey. 
