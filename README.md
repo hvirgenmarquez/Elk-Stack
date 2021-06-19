@@ -7,7 +7,7 @@ The following repository is designed for the purpose of fullfilling a sucessful 
 
 Below is a diagram using Draw.io, the diagram represents a visualization of how the network is set up, how each connection is established, and what components are involved.
 
-[Project 1 Diagram](https://github.com/hvirgenmarquez/HVirgen/blob/main/Diagrams/Project1.jpg)  <-- Click Here
+![Project 1 Diagram](https://github.com/hvirgenmarquez/HVirgen/blob/main/Diagrams/Project1%20Diagram.jpg?raw=true)
 
 In order to allow for an accurate deployment of the ELK Stack Server, I utilized Ansible's feature of playbooks to allow for more robost automation of the service installation. These playbooks allow me to install a service on a specified host group, in this case being the [webservers] group. The [webservers] group contains 3 virtual machines that are used for educational purposes for this project. 
 
@@ -141,7 +141,7 @@ For this project I utilized a total of 5 playbooks:
 - Playbook to [Start Metricbeat and Filebeat](https://github.com/hvirgenmarquez/HVirgen/blob/main/Ansible/filebeat-metricbeat-playbook-start-services.yml)
   - This playbook is to start up the services and increase max memory in case these settings were not saved.
 
-When the ELK Server Container is properly setup, you should be able to run _sudo docker container list -a_ and get a [response](https://github.com/hvirgenmarquez/HVirgen/blob/main/Diagrams/Screenshots/123123123.jpg) (<-click link).
+When the ELK Server Container is properly setup, you should be able to run _sudo docker container list -a_ and get a ![ELK Server Response](https://github.com/hvirgenmarquez/HVirgen/blob/main/Diagrams/Screenshots/123123123.jpg?raw=true) 
 
 
 ### Services being utilized & Machines monitored
